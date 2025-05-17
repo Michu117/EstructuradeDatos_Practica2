@@ -1,4 +1,4 @@
-package unl.dance.base.controller;
+package unl.dance.base.controller.parte1;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -89,9 +89,9 @@ public class Arreglos {
 
         Long FinalTime = System.nanoTime();
         Long Duration = FinalTime - InitialTime;
-
+ 
         PrintResult(repetidos, "Elementos repetidos");
-        System.out.println("Cantidad de elementos repetidos: " + numRepeated);
+        System.out.println("\nCantidad de elementos repetidos: " + numRepeated);
         System.out.println("Tiempo de ejecución: " + Duration + " ns");
     }
 }
