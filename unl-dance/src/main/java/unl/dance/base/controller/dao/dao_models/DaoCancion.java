@@ -2,7 +2,6 @@ package unl.dance.base.controller.dao.dao_models;
 
 import unl.dance.base.controller.dao.AdapterDao;
 import unl.dance.base.models.Cancion;
-import unl.dance.base.models.TipoArchivoEnum;
 
 public class DaoCancion extends AdapterDao<Cancion> {
     private Cancion obj;
@@ -46,22 +45,5 @@ public class DaoCancion extends AdapterDao<Cancion> {
     }
 
     
-    public static void main(String[] args) {
-        DaoCancion da = new DaoCancion();
-        da.getObj().setId(da.listAll().getLength() + 1);
-        da.getObj().setNombre("Molotov");
-        da.getObj().setId_genero(1);
-        da.getObj().setDuracion(3);
-        da.getObj().setUrl("https://www.youtube.com/watch?v=3Yc2v4g0X1E");
-        da.getObj().setTipo(TipoArchivoEnum.FISICO);
-        da.getObj().setId_album(1);
-        if (da.save())
-            System.out.println("GUARDADO");
-        else
-            System.out.println("Hubo un error");
-    }
-
-
-
 }
 
