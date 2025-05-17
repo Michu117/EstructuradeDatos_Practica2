@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "expresion": "hola",
+        "isCorrecto": true
+    },
+    {
+        "id": 2,
+        "expresion": "hola",
+        "isCorrecto": true
+    },
+    {
+        "id": 3,
+        "expresion": "j",
+        "isCorrecto": true
+    }
+]
