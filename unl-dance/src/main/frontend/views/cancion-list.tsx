@@ -1,13 +1,13 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
 import { Button, ComboBox, DatePicker, Dialog, Grid, GridColumn, GridItemModel, NumberField, TextField, VerticalLayout } from '@vaadin/react-components';
 import { Notification } from '@vaadin/react-components/Notification';
-import { ArtistaService, CancionServices, TaskService } from 'Frontend/generated/endpoints';
+import { CancionServices, TaskService } from 'Frontend/generated/endpoints';
 import { useSignal } from '@vaadin/hilla-react-signals';
 import handleError from 'Frontend/views/_ErrorHandler';
 import { Group, ViewToolbar } from 'Frontend/components/ViewToolbar';
 
 import { useDataProvider } from '@vaadin/hilla-react-crud';
-import Artista from 'Frontend/generated/unl/dance/base/models/Artista';
+import Cancion from 'Frontend/generated/unl/dance/base/models/Cancion';
 import { useCallback, useEffect, useState } from 'react';
 
 export const config: ViewConfig = {

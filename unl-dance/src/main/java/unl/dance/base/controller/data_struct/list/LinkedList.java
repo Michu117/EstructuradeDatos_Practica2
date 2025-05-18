@@ -241,9 +241,6 @@ public class LinkedList<E> {
 
     }
 
-    public boolean contains(int numero) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'contains'");
-    }
+    
 
 }

@@ -1,6 +1,5 @@
 package unl.dance.base.controller.services;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -49,5 +48,6 @@ public class GeneroService {
         return (List<Genero>)Arrays.asList(da.listAll().toArray());
     }
 
+    
     
 }

@@ -122,5 +122,9 @@ public class CancionServices {
         return lista;
     }
 
+
+    public List<Cancion> listAll() {
+        return (List<Cancion>) db.listAll();
+    }
     
 }
