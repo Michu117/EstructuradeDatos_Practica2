@@ -88,7 +88,18 @@ public class CancionServices {
         return lista;
     }
 
+    public List<String> listTipo() {
+        List<String> lista = new ArrayList<>();
+        for(TipoArchivoEnum r: TipoArchivoEnum.values()) {
+            lista.add(r.toString());
+        }        
+        return lista;
+    }
 
+
+    public List<Cancion> listAll() {
+        return (List<Cancion>) db.listAll();
+    }
 
     public List<HashMap> listCancion(){
         List<HashMap> lista = new ArrayList<>();
@@ -114,17 +125,4 @@ public class CancionServices {
     }
 
 
-    public List<String> listTipo() {
-        List<String> lista = new ArrayList<>();
-        for(TipoArchivoEnum r: TipoArchivoEnum.values()) {
-            lista.add(r.toString());
-        }        
-        return lista;
-    }
-
-
-    public List<Cancion> listAll() {
-        return (List<Cancion>) db.listAll();
-    }
-    
 }

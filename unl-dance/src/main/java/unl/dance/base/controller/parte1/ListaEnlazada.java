@@ -9,16 +9,6 @@ import unl.dance.base.controller.data_struct.list.LinkedList;
 
 public class ListaEnlazada {
 
-    public static void main(String[] args) {
-        ListaEnlazada app = new ListaEnlazada();
-        app.DataProcess();
-    }
-
-    public void PrintResult(LinkedList<Integer> list, String titulo) {
-        System.out.println(titulo + ":");
-        System.out.print(list.print());
-    }
-
     private BufferedReader FileReadM(String fileName) throws Exception {
         InputStream input = getClass().getClassLoader().getResourceAsStream(fileName);
         if (input == null) {
@@ -67,5 +57,15 @@ public class ListaEnlazada {
             }
         }
         return repeatedCount;
+    }
+
+    public void PrintResult(LinkedList<Integer> list, String titulo) {
+        System.out.println(titulo + ":");
+        System.out.print(list.print());
+    }
+    
+    public static void main(String[] args) {
+        ListaEnlazada app = new ListaEnlazada();
+        app.DataProcess();
     }
 }

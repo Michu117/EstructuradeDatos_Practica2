@@ -5,20 +5,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 public class Arreglos {
-    public static void main(String[] args) {
-        Arreglos app = new Arreglos();
-        app.DataProcess();
-    }
-
-    public void PrintResult(Integer[] arreglo, String titulo) {
-        System.out.println(titulo + ":");
-        for (int i = 0; i < arreglo.length; i++) {
-            System.out.print(arreglo[i]);
-            if (i < arreglo.length - 1) {
-                System.out.print(", ");
-            }
-        }
-    }
 
     private BufferedReader FileReadM(String fileName) throws Exception {
         InputStream input = getClass().getClassLoader().getResourceAsStream(fileName);
@@ -93,5 +79,20 @@ public class Arreglos {
         PrintResult(repetidos, "Elementos repetidos");
         System.out.println("\nCantidad de elementos repetidos: " + numRepeated);
         System.out.println("Tiempo de ejecución: " + Duration + " ns");
+    }
+
+    public void PrintResult(Integer[] arreglo, String titulo) {
+        System.out.println(titulo + ":");
+        for (int i = 0; i < arreglo.length; i++) {
+            System.out.print(arreglo[i]);
+            if (i < arreglo.length - 1) {
+                System.out.print(", ");
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        Arreglos app = new Arreglos();
+        app.DataProcess();
     }
 }
