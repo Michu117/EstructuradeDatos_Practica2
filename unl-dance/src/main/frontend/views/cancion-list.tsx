@@ -33,7 +33,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
   const duracion = useSignal('');
   const url = useSignal('');
   const tipo = useSignal('');
-  const createArtista = async () => {
+  const createCancion = async () => {
     try {
       if (nombre.value.trim().length > 0 && genero.value.trim().length > 0) {
         const id_genero = parseInt(genero.value)+1;
@@ -102,7 +102,7 @@ function CancionEntryForm(props: CancionEntryFormProps) {
             >
               Cancelar
             </Button>
-            <Button onClick={createArtista} theme="primary">
+            <Button onClick={createCancion} theme="primary">
               Registrar
             </Button>
             
@@ -168,13 +168,13 @@ function CancionEntryForm(props: CancionEntryFormProps) {
 //LISTA DE CANCIONES
 export default function CancionView() {
   
-  const dataProvider = useDataProvider<Artista>({
+  const dataProvider = useDataProvider<Cancion>({
     list: () => CancionServices.listCancion(),
   });
 
   
 
-  function indexIndex({model}:{model:GridItemModel<Artista>}) {
+  function indexIndex({model}:{model:GridItemModel<Cancion>}) {
     return (
       <span>
         {model.index + 1} 
