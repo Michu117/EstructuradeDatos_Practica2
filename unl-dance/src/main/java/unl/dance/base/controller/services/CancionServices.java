@@ -45,9 +45,9 @@ public class CancionServices {
         }
     }
 
-    public void update(@NotEmpty Integer id, @NotEmpty String nombre, Integer id_genero, Integer duracion, @NotEmpty String url, @NotEmpty String tipo, Integer id_album) throws Exception {
-        if (nombre.trim().length() > 0 && url.trim().length() > 0 && tipo.trim().length() > 0 && duracion > 0 && id_genero > 0 && id_album > 0) {
-            db.setObj(db.listAll().get(id - 1));
+    public void update(Integer id, @NotEmpty String nombre, Integer id_genero, Integer duracion, @NotEmpty String url, @NotEmpty String tipo, Integer id_album) throws Exception {
+        if (id != null && id > 0 && nombre.trim().length() > 0 && url.trim().length() > 0 && tipo.trim().length() > 0 && duracion > 0 && id_genero > 0 && id_album > 0) {
+            db.setObj(db.listAll().get(id));
         }
         db.getObj().setNombre(nombre);
         db.getObj().setDuracion(duracion);
@@ -55,7 +55,7 @@ public class CancionServices {
         db.getObj().setTipo(TipoArchivoEnum.valueOf(tipo));
         db.getObj().setUrl(url);
         db.getObj().setId_genero(id_genero);
-        if (!db.update(id - 1)) {
+        if (!db.update(id)) {
             throw new Exception("No se pudo guardar los datos de Cancion");
         }
     }

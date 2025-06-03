@@ -19,12 +19,22 @@ export const config: ViewConfig = {
   },
 };
 
+type Cancion = {
+  id: number;
+  nombre: string;
+  genero: string;
+  album: string;
+  duracion: number;
+  url: string;
+  tipo: string;
+};
 
 type CancionEntryFormProps = {
   onCancionCreated?: () => void;
 };
 
 type CancionEntryFormPropsUpdate = {
+  cancion: Cancion;
   onCancionUpdated?: () => void;
 };
 
@@ -166,118 +176,149 @@ function CancionEntryForm(props: CancionEntryFormProps) {
 }
 
 // ACTUALIZAR CANCION
-/*function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
-  const [dialogOpened, setDialogOpened] = useState(false);
+function CancionEntryFormUpdate(props: CancionEntryFormPropsUpdate) {
+  const dialogOpened = useSignal(false);
 
-  // Inicializa los valores con los datos recibidos
-  const [nombre, setNombre] = useState(props.arguments?.nombre || '');
-  const [genero, setGenero] = useState(props.arguments?.genero || '');
-  const [album, setAlbum] = useState(props.arguments?.album || '');
-  const [duracion, setDuracion] = useState(props.arguments?.duracion || '');
-  const [url, setUrl] = useState(props.arguments?.url || '');
-  const [tipo, setTipo] = useState(props.arguments?.tipo || '');
+  // Inicializa los campos con los datos de la canción
+  const id = useSignal(props.cancion?.id?.toString() || '');
+  const nombre = useSignal(props.cancion?.nombre || '');
+  const genero = useSignal(props.cancion?.genero || '');
+  const album = useSignal(props.cancion?.album || '');
+  const duracion = useSignal(props.cancion?.duracion?.toString() || '');
+  const url = useSignal(props.cancion?.url || '');
+  const tipo = useSignal(props.cancion?.tipo || '');
 
-  const [listaGenero, setListaGenero] = useState<String[]>([]);
-  const [listaAlbum, setListaAlbum] = useState<String[]>([]);
-  const [listaTipo, setListaTipo] = useState<String[]>([]);
-
-  useEffect(() => {
-    CancionServices.listaGeneroCombo().then(setListaGenero);
-    CancionServices.listaAlbumCombo().then(setListaAlbum);
-    CancionServices.listTipo().then(setListaTipo);
-  }, []);
-
-  // Actualiza los valores cuando cambian los props
-  useEffect(() => {
-    setNombre(props.arguments?.nombre || '');
-    setGenero(props.arguments?.genero || '');
-    setAlbum(props.arguments?.album || '');
-    setDuracion(props.arguments?.duracion || '');
-    setUrl(props.arguments?.url || '');
-    setTipo(props.arguments?.tipo || '');
-  }, [props.arguments]);
+  // Cuando se abre el diálogo, actualiza los valores
+  const openDialog = () => {
+    id.value = props.cancion?.id?.toString() || '';
+    nombre.value = props.cancion?.nombre || '';
+    genero.value = props.cancion?.genero || '';
+    album.value = props.cancion?.album || '';
+    duracion.value = props.cancion?.duracion?.toString() || '';
+    url.value = props.cancion?.url || '';
+    tipo.value = props.cancion?.tipo || '';
+    dialogOpened.value = true;
+  };
 
   const updateCancion = async () => {
     try {
-      if (nombre.trim().length > 0 && genero.trim().length > 0) {
-        const id_genero = parseInt(genero) + 1;
-        const id_album = parseInt(album) + 1;
+      if (nombre.value.trim().length > 0 && genero.value.trim().length > 0) {
+        const id_genero = parseInt(genero.value);
+        const id_album = parseInt(album.value);
         await CancionServices.update(
-          props.arguments.id, // Asegúrate que el objeto tenga el id
-          nombre,
+          parseInt(id.value),
+          nombre.value,
           id_genero,
-          parseInt(duracion),
-          url,
-          tipo,
+          parseInt(duracion.value),
+          url.value,
+          tipo.value,
           id_album
         );
         if (props.onCancionUpdated) {
           props.onCancionUpdated();
         }
-        setDialogOpened(false);
-        Notification.show('Canción actualizada', { duration: 5000, position: 'bottom-end', theme: 'success' });
+        dialogOpened.value = false;
+        Notification.show('Cancion editada', { duration: 5000, position: 'bottom-end', theme: 'success' });
       } else {
-        Notification.show('No se pudo actualizar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
+        Notification.show('No se pudo editar, faltan datos', { duration: 5000, position: 'top-center', theme: 'error' });
       }
     } catch (error) {
+      console.log(error);
       handleError(error);
     }
   };
 
+  let listaGenero = useSignal<String[]>([]);
+  useEffect(() => {
+    CancionServices.listaGeneroCombo().then(data =>
+      //console.log(data)
+      listaGenero.value = data
+    );
+  }, []);
+  let listaAlbum = useSignal<String[]>([]);
+  useEffect(() => {
+    CancionServices.listaAlbumCombo().then(data =>
+      //console.log(data)
+      listaAlbum.value = data
+    );
+  }, []);
+
+  let listaTipo = useSignal<String[]>([]);
+  useEffect(() => {
+    CancionServices.listTipo().then(data =>
+      //console.log(data)
+      listaTipo.value = data
+    );
+  }, []);
+
   return (
     <>
-      <Button size="small" onClick={() => setDialogOpened(true)} theme="tertiary">
-        Editar
-      </Button>
       <Dialog
         modeless
         headerTitle="Editar Canción"
-        opened={dialogOpened}
-        onOpenedChanged={({ detail }) => setDialogOpened(detail.value)}
+        opened={dialogOpened.value}
+        onOpenedChanged={({ detail }) => {
+          dialogOpened.value = detail.value;
+        }}
         footer={
           <>
-            <Button onClick={() => setDialogOpened(false)}>
-              Cancelar
-            </Button>
-            <Button onClick={updateCancion} theme="primary">
-              Guardar
-            </Button>
+            <Button onClick={() => { dialogOpened.value = false; }}>Cancelar</Button>
+            <Button onClick={updateCancion} theme="primary">Registrar</Button>
           </>
         }
       >
         <VerticalLayout style={{ alignItems: 'stretch', width: '18rem', maxWidth: '100%' }}>
           <TextField label="Nombre de la canción"
-            value={nombre}
-            onValueChanged={(evt) => setNombre(evt.detail.value)}
+            placeholder="Ingrese el nombre de la canción"
+            aria-label="Nombre de la canción"
+            value={nombre.value}
+            defaultValue={nombre.value}
+            onValueChanged={(evt) => (nombre.value = evt.detail.value)}
           />
           <ComboBox label="Genero"
-            items={listaGenero}
-            value={genero}
-            onValueChanged={(evt) => setGenero(evt.detail.value)}
+            items={listaGenero.value}
+            placeholder='Seleccione un genero'
+            aria-label='Seleccione un genero de la lista'
+            value={genero.value}
+            defaultValue={genero.value}
+            onValueChanged={(evt) => (genero.value = evt.detail.value)}
           />
           <ComboBox label="Album"
-            items={listaAlbum}
-            value={album}
-            onValueChanged={(evt) => setAlbum(evt.detail.value)}
+            items={listaAlbum.value}
+            placeholder='Seleccione un album'
+            aria-label='Seleccione un album de la lista'
+            value={album.value}
+            defaultValue={album.value}
+            onValueChanged={(evt) => (album.value = evt.detail.value)}
           />
           <ComboBox label="Tipo"
-            items={listaTipo}
-            value={tipo}
-            onValueChanged={(evt) => setTipo(evt.detail.value)}
+            items={listaTipo.value}
+            placeholder='Seleccione un tipo de archivo'
+            aria-label='Seleccione un tipo de archivo de la lista'
+            value={tipo.value}
+            defaultValue={tipo.value}
+            onValueChanged={(evt) => (tipo.value = evt.detail.value)}
           />
-          <NumberField label="Duración de la canción"
-            value={duracion}
-            onValueChanged={(evt) => setDuracion(evt.detail.value)}
+          <NumberField label="Duracion de la canción"
+            placeholder="Ingrese la duración de la canción"
+            aria-label="Duracion de la canción"
+            value={duracion.value}
+            defaultValue={duracion.value}
+            onValueChanged={(evt) => (duracion.value = evt.detail.value)}
           />
           <TextField label="Url de la canción"
-            value={url}
-            onValueChanged={(evt) => setUrl(evt.detail.value)}
+            placeholder="Ingrese la Url de la canción"
+            aria-label="Url de la canción"
+            value={url.value}
+            defaultValue={url.value}
+            onValueChanged={(evt) => (url.value = evt.detail.value)}
           />
         </VerticalLayout>
       </Dialog>
+      <Button onClick={openDialog}>Editar</Button>
     </>
   );
-}*/
+}
 
 
 //LISTA DE CANCIONES
@@ -292,10 +333,13 @@ export default function CancionView() {
 
   const order = (event, columnId) => {
     const direction = event.detail.value;
-    var dir = (direction == 'asc') ? 1 : 2;
-    CancionServices.order(columnId, dir).then(function (data) {
-      setItems(data);
-    });
+    if (!direction) {
+      // Sin orden, mostrar lista original
+      CancionServices.listAll().then(setItems);
+    } else {
+      var dir = (direction == 'asc') ? 1 : 2;
+      CancionServices.order(columnId, dir).then(setItems);
+    }
   }
 
   const callData = () => {
@@ -305,18 +349,15 @@ export default function CancionView() {
     });
   }
 
-  /*function indexLink({ model }: { model: GridItemModel<Cancion> }) {
+  function indexLink({ model }: { model: GridItemModel<Cancion> }) {
     return (
       <span>
-        <CancionEntryFormUpdate arguments={model.item} onCancionUpdated={callData}>
-
-        </CancionEntryFormUpdate>
-
+        <CancionEntryFormUpdate cancion={model.item} onCancionUpdated={callData} />
       </span>
     );
   }
-  <GridColumn header="Acciones" renderer={indexLink} />  
-  */
+
+
 
   function indexIndex({ model }: { model: GridItemModel<Cancion> }) {
     return (
@@ -332,7 +373,7 @@ export default function CancionView() {
 
       <ViewToolbar title="Lista de Canciones">
         <Group>
-          <CancionEntryForm onCancionCreated={callData}/>
+          <CancionEntryForm onCancionCreated={callData} />
         </Group>
       </ViewToolbar>
       <Grid items={items}>
@@ -343,7 +384,7 @@ export default function CancionView() {
         <GridSortColumn onDirectionChanged={(e) => order(e, "duracion")} path="duracion" header="Duracion" />
         <GridColumn path="url" header="Url" />
         <GridSortColumn onDirectionChanged={(e) => order(e, "tipo")} path="tipo" header="Tipo" />
-        
+        <GridColumn header="Acciones" renderer={indexLink} />
 
       </Grid>
     </main>
