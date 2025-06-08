@@ -333,11 +333,13 @@ export default function CancionView() {
 
   const order = (event, columnId) => {
     const direction = event.detail.value;
-    var dir = (direction == 'asc') ? 1 : 2
-
-    CancionServices.order(columnId, dir).then(function (data) {
-      setItems(data);
-    });
+    if (!direction) {
+      // Sin orden, mostrar lista original
+      CancionServices.listAll().then(setItems);
+    } else {
+      var dir = (direction == 'asc') ? 1 : 2;
+      CancionServices.order(columnId, dir).then(setItems);
+    }
   }
 
   const callData = () => {
