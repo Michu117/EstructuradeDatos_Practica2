@@ -1,5 +1,5 @@
 import { ViewConfig } from '@vaadin/hilla-file-router/types.js';
-import { Button, ComboBox, DatePicker, Dialog, Grid, GridColumn, GridItemModel, GridSortColumn, NumberField, TextField, VerticalLayout } from '@vaadin/react-components';
+import { Button, ComboBox, DatePicker, Dialog, Grid, GridColumn, GridItemModel, GridSortColumn, HorizontalLayout, Icon, NumberField, Select, TextField, VerticalLayout } from '@vaadin/react-components';
 import { Notification } from '@vaadin/react-components/Notification';
 import { CancionServices, TaskService } from 'Frontend/generated/endpoints';
 import { useSignal } from '@vaadin/hilla-react-signals';
@@ -333,13 +333,11 @@ export default function CancionView() {
 
   const order = (event, columnId) => {
     const direction = event.detail.value;
-    if (!direction) {
-      // Sin orden, mostrar lista original
-      CancionServices.listAll().then(setItems);
-    } else {
-      var dir = (direction == 'asc') ? 1 : 2;
-      CancionServices.order(columnId, dir).then(setItems);
-    }
+    var dir = (direction == 'asc') ? 1 : 2
+
+    CancionServices.order(columnId, dir).then(function (data) {
+      setItems(data);
+    });
   }
 
   const callData = () => {
@@ -358,7 +356,6 @@ export default function CancionView() {
   }
 
 
-
   function indexIndex({ model }: { model: GridItemModel<Cancion> }) {
     return (
       <span>
@@ -366,6 +363,43 @@ export default function CancionView() {
       </span>
     );
   }
+
+  //BUSCAR
+  const criterio = useSignal('');
+  const texto = useSignal('');
+
+  const itemSelect = [
+    {
+      label: 'Cancion',
+      value: 'nombre',
+    },
+    {
+      label: 'Genero',
+      value: 'genero',
+    },
+    {
+      label: 'Album',
+      value: 'album',
+    }
+  ];
+
+  const search = async () => {
+    try {
+      CancionServices.search(criterio.value, texto.value, 0).then(function (data) {
+        setItems(data);
+      });
+
+      criterio.value = '';
+      texto.value = '';
+
+      Notification.show('Busqueda realizada', { duration: 5000, position: 'bottom-end', theme: 'success' });
+
+
+    } catch (error) {
+      console.log(error);
+      handleError(error);
+    }
+  };
 
   return (
 
@@ -376,6 +410,28 @@ export default function CancionView() {
           <CancionEntryForm onCancionCreated={callData} />
         </Group>
       </ViewToolbar>
+      <HorizontalLayout theme="spacing">
+        <Select items={itemSelect}
+          value={criterio.value}
+          onValueChanged={(evt) => (criterio.value = evt.detail.value)}
+          placeholder={'Seleccione un criterio'}>
+
+        </Select>
+
+        <TextField
+          placeholder="Search"
+          style={{ width: '50%' }}
+          value={texto.value}
+          onValueChanged={(evt) => (texto.value = evt.detail.value)}
+
+        >
+          <Icon slot="prefix" icon="vaadin:search" />
+        </TextField>
+        <Button onClick={search} theme="primary">
+          BUSCAR
+        </Button>
+
+      </HorizontalLayout>
       <Grid items={items}>
         <GridColumn renderer={indexIndex} header="Nro" />
         <GridSortColumn onDirectionChanged={(e) => order(e, "nombre")} path="nombre" header="Cancion" />

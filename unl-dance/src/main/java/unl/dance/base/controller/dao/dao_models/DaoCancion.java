@@ -87,9 +87,7 @@ public class DaoCancion extends AdapterDao<Cancion> {
 
     }
 
-    
-
-    public LinkedList<HashMap<String, String>> all() {
+    public LinkedList<HashMap<String, String>> all() throws Exception {
         LinkedList<HashMap<String, String>> lista = new LinkedList<>();
         if (!this.listAll().isEmpty()) {
             Cancion[] arreglo = this.listAll().toArray();
@@ -100,34 +98,80 @@ public class DaoCancion extends AdapterDao<Cancion> {
         return lista;
     }
 
-    private HashMap<String, String> toDict(Cancion arreglo, Integer i) {
+    private HashMap<String, String> toDict(Cancion arreglo, Integer i) throws Exception {
         HashMap<String, Object> map = new HashMap<>();
         DaoAlbum db = new DaoAlbum();
         DaoGenero dc = new DaoGenero();
         HashMap<String, String> aux = new HashMap<>();
-        aux.put("id", arreglo.getId().toString(i));
+
+        aux.put("id", arreglo.getId().toString());
         aux.put("nombre", arreglo.getNombre());
-        aux.put("genero", dc.listAll().get(arreglo.getId_genero() - 1).getNombre());
-        aux.put("album", db.listAll().get(arreglo.getId_album() - 1).getNombre());
+        aux.put("genero", dc.get(arreglo.getId_genero()).getNombre());
+        aux.put("album", db.get(arreglo.getId_album()).getNombre());
         aux.put("duracion", arreglo.getDuracion().toString());
         aux.put("url", arreglo.getUrl());
         aux.put("tipo", arreglo.getTipo().toString());
         return aux;
     }
 
-    public LinkedList<HashMap<String, String>> orderbyCancion(Integer type, String attribute) {
-      LinkedList<HashMap<String, String>> lista = all();
-      if (!lista.isEmpty()){
-        HashMap arr[] = lista.toArray();
-        // Convert HashMap array back to Cancion array for sorting
-        Cancion[] canciones = this.listAll().toArray();
-        quickSort(canciones, 0, canciones.length - 1, type);
-        // Update lista with sorted canciones
-        lista = new LinkedList<>();
-        for (Cancion cancion : canciones) {
-            lista.add(toDict(cancion, type));
+    public LinkedList<HashMap<String, String>> orderbyCancion(Integer type, String attribute) throws Exception {
+        LinkedList<HashMap<String, String>> lista = all();
+        if (!lista.isEmpty()) {
+            HashMap arr[] = lista.toArray();
+            // Convert HashMap array back to Cancion array for sorting
+            Cancion[] canciones = this.listAll().toArray();
+            quickSort(canciones, 0, canciones.length - 1, type);
+            // Update lista with sorted canciones
+            lista = new LinkedList<>();
+            for (Cancion cancion : canciones) {
+                lista.add(toDict(cancion, type));
+            }
         }
-      }
-      return lista;
+        return lista;
     }
+
+    public LinkedList<HashMap<String, String>> search(String attribute, String text, Integer type) throws Exception {
+        LinkedList<HashMap<String, String>> lista = all();
+        LinkedList<HashMap<String, String>> resp = new LinkedList<>();
+        if (!lista.isEmpty()) {
+            HashMap<String, String>[] arr = lista.toArray();
+            switch (type) {
+                case 1:
+                    for (HashMap m : arr) {
+                        if (m.get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
+                            resp.add(m);
+                        }
+                    }
+                    break;
+                case 2:
+                    for (HashMap m : arr) {
+                        if (m.get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
+                            resp.add(m);
+                        }
+                    }
+                    break;
+                default:
+                    for (HashMap m : arr) {
+                        if (m.get(attribute).toString().toLowerCase().contains(text.toLowerCase())) {
+                            resp.add(m);
+                        }
+                    }
+                    break;
+            }
+        }
+        return resp;
+    }
+    /*public static void main(String[] args) {
+        DaoCancion dc = new DaoCancion();
+       try {
+           dc.setObj(dc.get(132));
+            if (dc.getObj() != null && dc.getObj().getId() != null) {
+            System.out.println("Cancion found: " + dc.getObj().getNombre());
+            } else {
+                System.out.println("Cancion not found.");
+            }
+           
+       } catch (Exception ex) {
+       }
+    }*/
 }

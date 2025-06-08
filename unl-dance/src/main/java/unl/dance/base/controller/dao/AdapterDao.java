@@ -3,28 +3,31 @@ package unl.dance.base.controller.dao;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.util.Objects;
 import java.util.Scanner;
-
-import unl.dance.base.controller.data_struct.list.LinkedList;
 
 import com.google.gson.Gson;
 
-public class AdapterDao <T> implements InterfaceDao<T> {
+import unl.dance.base.controller.data_struct.list.LinkedList;
+
+public class AdapterDao<T> implements InterfaceDao<T> {
+
     private Class<T> clazz;
     private Gson g;
-    protected static String base_path = "data"+File.separatorChar;
+    protected static String base_path = "data" + File.separatorChar;
+
     public AdapterDao(Class<T> clazz) {
         this.clazz = clazz;
         this.g = new Gson();
-    } 
+    }
 
     private String readFile() throws Exception {
-        File file = new File(base_path+clazz.getSimpleName()+".json");
-        if(!file.exists()) {            
-            saveFile("[]");    
+        File file = new File(base_path + clazz.getSimpleName() + ".json");
+        if (!file.exists()) {
+            saveFile("[]");
         }
         StringBuilder sb = new StringBuilder();
-        try(Scanner in = new Scanner(new FileReader(file))) {
+        try (Scanner in = new Scanner(new FileReader(file))) {
             while (in.hasNextLine()) {
                 sb.append(in.nextLine()).append("\n");
             }
@@ -33,18 +36,18 @@ public class AdapterDao <T> implements InterfaceDao<T> {
     }
 
     private void saveFile(String data) throws Exception {
-        File file = new File(base_path+clazz.getSimpleName()+".json");
+        File file = new File(base_path + clazz.getSimpleName() + ".json");
         //file.getParentFile().m
-        if(!file.exists()) {
-            System.out.println("Aqui estoy "+file.getAbsolutePath());
+        if (!file.exists()) {
+            System.out.println("Aqui estoy " + file.getAbsolutePath());
             file.createNewFile();
         }
         //if(!file.exists()) {
-            FileWriter fw = new FileWriter(file);
-            fw.write(data);
-            fw.flush();
-            fw.close();    
-            //file.close();
+        FileWriter fw = new FileWriter(file);
+        fw.write(data);
+        fw.flush();
+        fw.close();
+        //file.close();
         //}
     }
 
@@ -54,12 +57,12 @@ public class AdapterDao <T> implements InterfaceDao<T> {
         //throw new UnsupportedOperationException("Unimplemented method 'listAll'");
         LinkedList<T> lista = new LinkedList<>();
         try {
-            String data = readFile();            
-            T[] m = (T[]) g.fromJson(data, java.lang.reflect.Array.newInstance(clazz, 0).getClass());            
+            String data = readFile();
+            T[] m = (T[]) g.fromJson(data, java.lang.reflect.Array.newInstance(clazz, 0).getClass());
             lista.toList(m);
-            
+
         } catch (Exception e) {
-            System.out.println("Error lista"+e.toString());
+            System.out.println("Error lista" + e.toString());
             // TODO: handle exception
         }
         return lista;
@@ -70,7 +73,7 @@ public class AdapterDao <T> implements InterfaceDao<T> {
         // TODO Auto-generated method stub
         //throw new UnsupportedOperationException("Unimplemented method 'persist'");
         LinkedList<T> list = listAll();
-        
+
         list.add(obj);
         saveFile(g.toJson(list.toArray()));
     }
@@ -92,8 +95,36 @@ public class AdapterDao <T> implements InterfaceDao<T> {
 
     @Override
     public T get(Integer id) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'get'");
+        if (!listAll().isEmpty()) {
+            return BinarySearchIterative(listAll().toArray(), id);
+        } else {
+            return null;
+        }
     }
+
+    public T BinarySearchIterative(T[] arr, Integer id) throws Exception {
+        int left = 0;
+        int right = arr.length - 1;
+        int n = 0;
+
+        while (left <= right) {
+            n = left + (right - left) / 2;
+            Integer midId = (Integer) getMethod("Id", arr[n]);
+
+            if (Objects.equals(midId, id)) {
+                return arr[n];
+            } else if (midId < id) {
+                left = n + 1;
+            } else {
+                right = n - 1;
+            }
+        }
+        return null;
+    }
+
     
+
+    private Object getMethod(String attribute, T obj) throws Exception {
+        return obj.getClass().getMethod("get" + attribute).invoke(obj);
+    }
 }

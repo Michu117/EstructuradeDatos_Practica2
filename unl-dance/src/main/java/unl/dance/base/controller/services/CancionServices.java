@@ -15,6 +15,7 @@ import jakarta.validation.constraints.NotEmpty;
 import unl.dance.base.controller.dao.dao_models.DaoAlbum;
 import unl.dance.base.controller.dao.dao_models.DaoCancion;
 import unl.dance.base.controller.dao.dao_models.DaoGenero;
+import unl.dance.base.controller.data_struct.list.LinkedList;
 import unl.dance.base.models.Album;
 import unl.dance.base.models.Genero;
 import unl.dance.base.models.TipoArchivoEnum;
@@ -98,13 +99,21 @@ public class CancionServices {
         return lista;
     }
 
-    public List<HashMap> listAll() {
+    public List<HashMap> listAll() throws Exception {
         return Arrays.asList(db.all().toArray());
     }
 
-    public List<HashMap> order(String attribute, Integer type) {
+    public List<HashMap> order(String attribute, Integer type) throws Exception {
         return Arrays.asList(db.orderbyCancion(type, attribute).toArray());
     }
 
+    public List<HashMap> search(String attribute, String text, Integer type) throws Exception {
+        LinkedList<HashMap<String, String>> lista = db.search(attribute, text, type);
+        if (!lista.isEmpty()) {
+            return Arrays.asList(lista.toArray());
+        } else {
+            return new ArrayList<>();
+        }
+    }
     
 }
