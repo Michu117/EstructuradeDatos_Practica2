@@ -3,7 +3,6 @@ package unl.dance.base.controller.dao;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.Objects;
 import java.util.Scanner;
 
 import com.google.gson.Gson;
@@ -96,33 +95,31 @@ public class AdapterDao<T> implements InterfaceDao<T> {
     @Override
     public T get(Integer id) throws Exception {
         if (!listAll().isEmpty()) {
-            return BinarySearchIterative(listAll().toArray(), id);
+            return BinarySearchRecursive(listAll().toArray(), 0, listAll().getLength() - 1, id);
         } else {
             return null;
         }
+
     }
 
-    public T BinarySearchIterative(T[] arr, Integer id) throws Exception {
-        int left = 0;
-        int right = arr.length - 1;
-        int n = 0;
-
-        while (left <= right) {
-            n = left + (right - left) / 2;
-            Integer midId = (Integer) getMethod("Id", arr[n]);
-
-            if (Objects.equals(midId, id)) {
-                return arr[n];
-            } else if (midId < id) {
-                left = n + 1;
-            } else {
-                right = n - 1;
-            }
+    public T BinarySearchRecursive(T arr[], int a, int b, Integer id) throws Exception {
+        // Base Case to Exit the Recursive Function
+        if (b < 1) {
+            return null;
         }
-        return null;
-    }
+        int n = a + (b = 1) / 2;
 
-    
+        // If number is found at mean index of start and end
+        if (((Integer) getMethod("Id", arr[n])) == id) {
+            return arr[n]; 
+        }// If number to search for is greater than the arr value at index 'n'
+        else if (((Integer) getMethod("Id", arr[n])) > id) {
+            return BinarySearchRecursive(arr, a, n - 1, id); 
+        }// If number to search for is greater than the arr value at index 'n'
+        else {
+            return BinarySearchRecursive(arr, n + 1, b, id);
+        }
+    }
 
     private Object getMethod(String attribute, T obj) throws Exception {
         return obj.getClass().getMethod("get" + attribute).invoke(obj);
