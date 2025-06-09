@@ -104,7 +104,7 @@ public class DaoCancion extends AdapterDao<Cancion> {
         DaoGenero dc = new DaoGenero();
         HashMap<String, String> aux = new HashMap<>();
 
-        aux.put("id", arreglo.getId().toString());
+        aux.put("id", arreglo.getId().toString(i));
         aux.put("nombre", arreglo.getNombre());
         aux.put("genero", dc.get(arreglo.getId_genero()).getNombre());
         aux.put("album", db.get(arreglo.getId_album()).getNombre());
