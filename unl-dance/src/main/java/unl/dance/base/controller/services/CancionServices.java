@@ -68,7 +68,7 @@ public class CancionServices {
             Album[] arreglo = da.listAll().toArray();
             for (int i = 0; i < arreglo.length; i++) {
                 HashMap<String, String> aux = new HashMap<>();
-                aux.put("value", arreglo[i].getId().toString(i));
+                aux.put("value", arreglo[i].getId().toString());
                 aux.put("label", arreglo[i].getNombre());
                 lista.add(aux);
             }
@@ -83,7 +83,7 @@ public class CancionServices {
             Genero[] arreglo = da.listAll().toArray();
             for (int i = 0; i < arreglo.length; i++) {
                 HashMap<String, String> aux = new HashMap<>();
-                aux.put("value", arreglo[i].getId().toString(i));
+                aux.put("value", arreglo[i].getId().toString());
                 aux.put("label", arreglo[i].getNombre());
                 lista.add(aux);
             }

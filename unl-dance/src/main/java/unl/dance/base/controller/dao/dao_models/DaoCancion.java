@@ -50,42 +50,44 @@ public class DaoCancion extends AdapterDao<Cancion> {
         }
     }
 
-    public void quickSort(Cancion arr[], int low, int high, Integer type) {
-        if (low < high) {
-            int pi = partition(arr, low, high, type);
-            quickSort(arr, low, pi - 1, type);
-            quickSort(arr, pi + 1, high, type);
-        }
+    public void quickSort(Cancion arr[], int low, int high, Integer type, String attribute) {
+    if (low < high) {
+        int pi = partition(arr, low, high, type, attribute);
+        quickSort(arr, low, pi - 1, type, attribute);
+        quickSort(arr, pi + 1, high, type, attribute);
     }
+}
 
-    private int partition(Cancion[] arr, int low, int high, Integer type) {
-        Cancion pivot = arr[high];
-        int i = (low - 1);
-        if (type == Utiles.ASCENDENTE) {
-            for (int j = low; j < high; j++) {
-                if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) < 0) {
-                    i++;
-                    Cancion temp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = temp;
-                }
+    private int partition(Cancion[] arr, int low, int high, Integer type, String attribute) {
+    Cancion pivot = arr[high];
+    int i = (low - 1);
+    for (int j = low; j < high; j++) {
+        boolean condition = false;
+        if ("duracion".equalsIgnoreCase(attribute)) {
+            if (type == Utiles.ASCENDENTE) {
+                condition = arr[j].getDuracion() < pivot.getDuracion();
+            } else {
+                condition = arr[j].getDuracion() > pivot.getDuracion();
             }
         } else {
-            for (int j = low; j < high; j++) {
-                if (arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) > 0) {
-                    i++;
-                    Cancion temp = arr[i];
-                    arr[i] = arr[j];
-                    arr[j] = temp;
-                }
+            if (type == Utiles.ASCENDENTE) {
+                condition = arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) < 0;
+            } else {
+                condition = arr[j].getNombre().toLowerCase().compareTo(pivot.getNombre().toLowerCase()) > 0;
             }
         }
-        Cancion temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
-        return i + 1;
-
+        if (condition) {
+            i++;
+            Cancion temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
     }
+    Cancion temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return i + 1;
+}
 
     public LinkedList<HashMap<String, String>> all() throws Exception {
         LinkedList<HashMap<String, String>> lista = new LinkedList<>();
@@ -115,52 +117,50 @@ public class DaoCancion extends AdapterDao<Cancion> {
     }
 
     public LinkedList<HashMap<String, String>> orderbyCancion(Integer type, String attribute) throws Exception {
-        LinkedList<HashMap<String, String>> lista = all();
-        if (!lista.isEmpty()) {
-            HashMap arr[] = lista.toArray();
-            // Convert HashMap array back to Cancion array for sorting
-            Cancion[] canciones = this.listAll().toArray();
-            quickSort(canciones, 0, canciones.length - 1, type);
-            // Update lista with sorted canciones
-            lista = new LinkedList<>();
-            for (Cancion cancion : canciones) {
-                lista.add(toDict(cancion, type));
-            }
+    LinkedList<HashMap<String, String>> lista = all();
+    if (!lista.isEmpty()) {
+        Cancion[] canciones = this.listAll().toArray();
+        quickSort(canciones, 0, canciones.length - 1, type, attribute);
+
+        lista = new LinkedList<>();
+        for (Cancion cancion : canciones) {
+            lista.add(toDict(cancion, type));
         }
+    }
         return lista;
     }
-
-    public LinkedList<HashMap<String, String>> search(String attribute, String text, Integer type) throws Exception {
-        LinkedList<HashMap<String, String>> lista = all();
-        LinkedList<HashMap<String, String>> resp = new LinkedList<>();
-        if (!lista.isEmpty()) {
-            HashMap<String, String>[] arr = lista.toArray();
-            switch (type) {
-                case 1:
-                    for (HashMap m : arr) {
-                        if (m.get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
-                            resp.add(m);
+    
+        public LinkedList<HashMap<String, String>> search(String attribute, String text, Integer type) throws Exception {
+            LinkedList<HashMap<String, String>> lista = all();
+            LinkedList<HashMap<String, String>> resp = new LinkedList<>();
+            if (!lista.isEmpty()) {
+                HashMap<String, String>[] arr = lista.toArray();
+                switch (type) {
+                    case 1:
+                        for (HashMap m : arr) {
+                            if (m.get(attribute).toString().toLowerCase().startsWith(text.toLowerCase())) {
+                                resp.add(m);
+                            }
                         }
-                    }
-                    break;
-                case 2:
-                    for (HashMap m : arr) {
-                        if (m.get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
-                            resp.add(m);
+                        break;
+                    case 2:
+                        for (HashMap m : arr) {
+                            if (m.get(attribute).toString().toLowerCase().endsWith(text.toLowerCase())) {
+                                resp.add(m);
+                            }
                         }
-                    }
-                    break;
-                default:
-                    for (HashMap m : arr) {
-                        if (m.get(attribute).toString().toLowerCase().contains(text.toLowerCase())) {
-                            resp.add(m);
+                        break;
+                    default:
+                        for (HashMap m : arr) {
+                            if (m.get(attribute).toString().toLowerCase().contains(text.toLowerCase())) {
+                                resp.add(m);
+                            }
                         }
-                    }
-                    break;
+                        break;
+                }
             }
+            return resp;
         }
-        return resp;
-    }
     /*public static void main(String[] args) {
         DaoCancion dc = new DaoCancion();
        try {
