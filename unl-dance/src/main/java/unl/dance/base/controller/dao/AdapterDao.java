@@ -103,20 +103,16 @@ public class AdapterDao<T> implements InterfaceDao<T> {
     }
 
     public T BinarySearchRecursive(T arr[], int a, int b, Integer id) throws Exception {
-        // Base Case to Exit the Recursive Function
         if (b < 1) {
             return null;
         }
         int n = a + (b = 1) / 2;
 
-        // If number is found at mean index of start and end
         if (((Integer) getMethod("Id", arr[n])) == id) {
-            return arr[n]; 
-        }// If number to search for is greater than the arr value at index 'n'
-        else if (((Integer) getMethod("Id", arr[n])) > id) {
-            return BinarySearchRecursive(arr, a, n - 1, id); 
-        }// If number to search for is greater than the arr value at index 'n'
-        else {
+            return arr[n];
+        } else if (((Integer) getMethod("Id", arr[n])) > id) {
+            return BinarySearchRecursive(arr, a, n - 1, id);
+        } else {
             return BinarySearchRecursive(arr, n + 1, b, id);
         }
     }
@@ -124,4 +120,5 @@ public class AdapterDao<T> implements InterfaceDao<T> {
     private Object getMethod(String attribute, T obj) throws Exception {
         return obj.getClass().getMethod("get" + attribute).invoke(obj);
     }
+
 }

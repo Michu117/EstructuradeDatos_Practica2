@@ -104,11 +104,11 @@ public class CancionServices {
     }
 
     public List<HashMap> order(String attribute, Integer type) throws Exception {
-        return Arrays.asList(db.orderbyCancion(type, attribute).toArray());
+        return Arrays.asList(db.orderByCancion(type, attribute).toArray());
     }
 
     public List<HashMap> search(String attribute, String text, Integer type) throws Exception {
-        LinkedList<HashMap<String, String>> lista = db.search(attribute, text, type);
+        LinkedList<HashMap<String, Object>> lista = db.search(attribute, text, type);
         if (!lista.isEmpty()) {
             return Arrays.asList(lista.toArray());
         } else {
