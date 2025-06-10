@@ -382,6 +382,14 @@ export default function CancionView() {
     {
       label: 'Album',
       value: 'album',
+    },
+    {
+      label: 'Duracion',
+      value: 'duracion',
+    },
+    {
+      label: 'Tipo',
+      value: 'tipo',
     }
   ];
 
@@ -431,6 +439,9 @@ export default function CancionView() {
         </TextField>
         <Button onClick={search} theme="primary">
           BUSCAR
+        </Button>
+        <Button onClick={callData} theme="secondary">
+          REFRESCAR
         </Button>
 
       </HorizontalLayout>
