@@ -44,5 +44,17 @@
     {
         "id": 11,
         "nombre": "In Utero"
+    },
+    {
+        "id": 12,
+        "nombre": "Fallen"
+    },
+    {
+        "id": 13,
+        "nombre": "Origins"
+    },
+    {
+        "id": 14,
+        "nombre": "Red Rose Speedway"
     }
 ]

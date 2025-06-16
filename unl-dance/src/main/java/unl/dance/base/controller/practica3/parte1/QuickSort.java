@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import unl.dance.base.controller.data_struct.list.LinkedList;
+
 public class QuickSort {
 
     private BufferedReader FileReadM(String fileName) throws Exception {
@@ -14,63 +16,52 @@ public class QuickSort {
         return new BufferedReader(new InputStreamReader(input));
     }
 
-    public Integer countLin() {
-        Integer cantidad = 0;
-        try (BufferedReader br = FileReadM("data.txt")) {
-            while (br.readLine() != null) {
-                cantidad++;
-            }
-        } catch (Exception e) {
-            System.out.println("Archivo no encontrado " + e.getMessage());
-        }
-        return cantidad;
-    }
 
-    public void quickSort(Integer[] arr, int low, int high) {
+    public void quickSort(LinkedList<Integer> list, int low, int high) {
         if (low < high) {
-            int pi = partition(arr, low, high);
-            quickSort(arr, low, pi - 1);
-            quickSort(arr, pi + 1, high);
+            int pi = partition(list, low, high);
+            quickSort(list, low, pi - 1);
+            quickSort(list, pi + 1, high);
         }
     }
 
-    private int partition(Integer[] arr, int low, int high) {
-        int pivot = arr[high];
-        int i = (low - 1);
+    private int partition(LinkedList<Integer> list, int low, int high) {
+        int pivot = list.get(high);
+        int i = low - 1;
         for (int j = low; j < high; j++) {
-            if (arr[j] <= pivot) {
+            if (list.get(j) <= pivot) {
                 i++;
-                int temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
+                
+                int temp = list.get(i);
+                list.update(list.get(j), i);
+                list.update(temp, j);
             }
         }
-        int temp = arr[i + 1];
-        arr[i + 1] = arr[high];
-        arr[high] = temp;
+        int temp = list.get(i + 1);
+        list.update(list.get(high), i + 1);
+        list.update(temp, high);
         return i + 1;
     }
 
-    public void PrintResult(Integer[] arreglo, String titulo) {
+    public void PrintResult(LinkedList<Integer> list, String titulo) {
         System.out.println(titulo + ":");
-        for (int i = 0; i < arreglo.length; i++) {
-            System.out.print(arreglo[i]);
-            if (i < arreglo.length - 1) {
+        for (int i = 0; i < list.getLength(); i++) {
+            System.out.print(list.get(i));
+            if (i < list.getLength() - 1) {
                 System.out.print(", ");
             }
         }
     }
 
     public void DataProcess() {
-        Integer cantidadLineas = countLin();
-        Integer[] arreglo = new Integer[cantidadLineas];
+        LinkedList<Integer> list = new LinkedList<>();
         int i = 0;
 
         try (BufferedReader br = FileReadM("data.txt")) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (!linea.trim().isEmpty()) {
-                    arreglo[i] = Integer.parseInt(linea.trim());
+                    list.add(Integer.parseInt(linea.trim()));
                     i++;
                 }
             }
@@ -81,16 +72,15 @@ public class QuickSort {
 
         Long InitialTime = System.nanoTime();
 
-        quickSort(arreglo, 0, arreglo.length - 1);
+        quickSort(list, 0, list.getLength() - 1);
 
         Long FinalTime = System.nanoTime();
         Long Duration = FinalTime - InitialTime;
 
-        PrintResult(arreglo, "Arreglo ordenado");
+        PrintResult(list, "Lista ordenada");
         System.out.println("\nTiempo de ejecución QuickSort: " + Duration + " ns");
     }
 
-    // Método main
     public static void main(String[] args) {
         QuickSort app = new QuickSort();
         app.DataProcess();

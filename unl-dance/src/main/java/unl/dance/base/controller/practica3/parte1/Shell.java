@@ -4,6 +4,8 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import unl.dance.base.controller.data_struct.list.LinkedList;
+
 public class Shell {
 
     private BufferedReader FileReadM(String fileName) throws Exception {
@@ -14,53 +16,39 @@ public class Shell {
         return new BufferedReader(new InputStreamReader(input));
     }
 
-    public Integer countLin() {
-        Integer cantidad = 0;
-        try (BufferedReader br = FileReadM("data.txt")) {
-            while (br.readLine() != null) {
-                cantidad++;
-            }
-        } catch (Exception e) {
-            System.out.println("Archivo no encontrado " + e.getMessage());
-        }
-        return cantidad;
-    }
 
-    // Algoritmo shell
-    public static Integer[] shell(Integer[] arreglo){
+    public static void shell(LinkedList<Integer> list){
         int inta, i, aux;
         boolean band;
-        inta = arreglo.length;
+        inta = list.getLength();
         while(inta > 0){
             inta = inta / 2;
             band = true;
             while(band){
                 band = false;
                 i = 0;
-                while ((i+inta) <=arreglo.length-1){
-                    if (arreglo[i] > arreglo[i + inta]){
-                        aux = arreglo[i];
-                        arreglo[i] = arreglo[i+inta];
-                        arreglo[i+inta] = aux;
+                while ((i+inta) <= list.getLength()-1){
+                    if (list.get(i) > list.get(i + inta)){
+                        aux = list.get(i);
+                        list.update(list.get(i+inta), i);
+                        list.update(aux, i+inta);
                         band = true;
                     }
                     i = i +1;
                 }
             }
         }
-        return arreglo;
     }
 
     public void DataProcess() {
-        Integer cantidadLineas = countLin();
-        Integer[] arreglo = new Integer[cantidadLineas];
+        LinkedList<Integer> list = new LinkedList<>();
         int i = 0;
 
         try (BufferedReader br = FileReadM("data.txt")) {
             String linea;
             while ((linea = br.readLine()) != null) {
                 if (!linea.trim().isEmpty()) {
-                    arreglo[i] = Integer.parseInt(linea.trim());
+                    list.add(Integer.parseInt(linea.trim()));
                     i++;
                 }
             }
@@ -68,26 +56,24 @@ public class Shell {
             System.out.println("Error al leer el archivo: " + e.getMessage());
         }
 
-        System.out.println("Arreglo original:");
-        printArray(arreglo);
 
         long startTime = System.nanoTime();
 
-        shell(arreglo);
+        shell(list);
 
         long endTime = System.nanoTime();
         long duration = endTime - startTime;
 
-        System.out.println("\nArreglo ordenado:");
-        printArray(arreglo);
+        System.out.println("\nLista ordenada:");
+        printList(list);
 
         System.out.println("\nTiempo de ejecución del Shell: " + duration + " ns");
     }
 
-    public void printArray(Integer[] arreglo) {
-        for (int i = 0; i < arreglo.length; i++) {
-            System.out.print(arreglo[i]);
-            if (i < arreglo.length - 1) {
+    public void printList(LinkedList<Integer> list) {
+        for (int i = 0; i < list.getLength(); i++) {
+            System.out.print(list.get(i));
+            if (i < list.getLength() - 1) {
                 System.out.print(", ");
             }
         }

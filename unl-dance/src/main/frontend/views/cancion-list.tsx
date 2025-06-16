@@ -49,8 +49,8 @@ function CancionEntryForm(props: CancionEntryFormProps) {
   const createCancion = async () => {
     try {
       if (nombre.value.trim().length > 0 && genero.value.trim().length > 0) {
-        const id_genero = parseInt(genero.value) + 1;
-        const id_album = parseInt(album.value) + 1;
+        const id_genero = parseInt(genero.value);
+        const id_album = parseInt(album.value);
         await CancionServices.create(nombre.value, id_genero, parseInt(duracion.value), url.value, tipo.value, id_album);
         if (props.onCancionCreated) {
           props.onCancionCreated();
