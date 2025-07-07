@@ -1,11 +1,16 @@
 package unl.dance.base.controller.data_struct.graphs;
 
+import unl.dance.base.controller.data_struct.list.LinkedList;
+
 public class UndirectedLabelGraph<E> extends DirectLabelGraph<E> {
 
-	public UndirectedLabelGraph(Integer size, Class<E> clazz) {
+	private Float[][] graph;
+
+    public UndirectedLabelGraph(Integer size, Class<E> clazz) {
 		super(size, clazz);
 	}
-
+    
+    
     // Sobrescribir insert_label para hacer el grafo no dirigido
     @Override
     public void insert_label(E o, E d, Float weight) {
@@ -26,6 +31,35 @@ public class UndirectedLabelGraph<E> extends DirectLabelGraph<E> {
     @Override
     public void insert_label(E o, E d) {
         insert_label(o, d, Float.NaN);
+    }
+
+    public Float[][] getMatrix() {
+        // Initialize the matrix if it's null
+        if (this.graph == null) {
+            int n = nro_vertex();
+            this.graph = new Float[n][n];
+            
+            // Initialize all positions with null (no connection)
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    this.graph[i][j] = null;
+                }
+            }
+            
+            // Fill the matrix based on adjacency lists
+            for (int i = 1; i <= n; i++) {
+                LinkedList<Adjacency> adjacencies = adjacencies(i);
+                if (!adjacencies.isEmpty()) {
+                    Adjacency[] adjArray = adjacencies.toArray();
+                    for (Adjacency adj : adjArray) {
+                        int sourceIndex = i - 1; // Convert 1-based to 0-based
+                        int destIndex = adj.getDestiny() - 1; // Convert 1-based to 0-based
+                        this.graph[sourceIndex][destIndex] = adj.getWeigth();
+                    }
+                }
+            }
+        }
+        return this.graph;
     }
 
     public static void main(String[] args) {

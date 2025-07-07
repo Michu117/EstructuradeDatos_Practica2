@@ -1,6 +1,5 @@
 package unl.dance.base.controller.data_struct.graphs.Dijkstra;
 
-import unl.dance.base.controller.data_struct.graphs.Adjacency;
 import unl.dance.base.controller.data_struct.graphs.UndirectedLabelGraph;
 import unl.dance.base.controller.data_struct.list.LinkedList;
 
@@ -23,6 +22,9 @@ public class Dijkstra {
             predecesores[i] = null;
         }
 
+        // Obtener matriz de adyacencias
+        Float[][] matriz = grafo.getMatrix();
+
         // Buscar índice del nodo de inicio
         int indiceInicio = buscarIndice(etiquetas, inicio);
         distancias[indiceInicio] = 0;
@@ -32,19 +34,13 @@ public class Dijkstra {
             if (actual == -1) break; // No quedan nodos alcanzables
             visitados[actual] = true;
 
-            LinkedList<Adjacency> adyacencias = grafo.adjacencies_label(etiquetas[actual]);
-            if (!adyacencias.isEmpty()) {
-                Adjacency[] vecinos = adyacencias.toArray();
-                for (Adjacency vecino : vecinos) {
-                    String etiquetaVecino = grafo.getLabel(vecino.getDestiny());
-                    int indiceVecino = buscarIndice(etiquetas, etiquetaVecino);
-                    if (!visitados[indiceVecino]) {
-                        float peso = vecino.getWeigth().isNaN() ? 1 : vecino.getWeigth();
-                        float nuevaDistancia = distancias[actual] + peso;
-                        if (nuevaDistancia < distancias[indiceVecino]) {
-                            distancias[indiceVecino] = nuevaDistancia;
-                            predecesores[indiceVecino] = etiquetas[actual];
-                        }
+            for (int j = 0; j < n; j++) {
+                if (matriz[actual][j] != null && !matriz[actual][j].isNaN() && !visitados[j]) {
+                    float peso = matriz[actual][j];
+                    float nuevaDistancia = distancias[actual] + peso;
+                    if (nuevaDistancia < distancias[j]) {
+                        distancias[j] = nuevaDistancia;
+                        predecesores[j] = etiquetas[actual];
                     }
                 }
             }
@@ -113,4 +109,3 @@ public class Dijkstra {
         return matriz;
     }
 }
-
