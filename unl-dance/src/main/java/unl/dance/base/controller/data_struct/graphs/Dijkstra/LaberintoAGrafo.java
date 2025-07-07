@@ -11,8 +11,7 @@ public class LaberintoAGrafo {
         int c = filas[0].split(",").length;
 
         char[][] matriz = new char[r][c];
-        
-        // Se carga el laberinto a una matriz bidimensional
+
         for (int i = 0; i < r; i++) {
             String[] elementos = filas[i].split(",");
             for (int j = 0; j < c; j++) {
@@ -20,7 +19,6 @@ public class LaberintoAGrafo {
             }
         }
 
-        // Contar celdas transitables para determinar tamaño del grafo
         int contadorNodos = 0;
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
@@ -32,7 +30,6 @@ public class LaberintoAGrafo {
 
         UndirectedLabelGraph<String> grafo = new UndirectedLabelGraph<>(contadorNodos, String.class);
 
-        // Mapeo de etiquetas a índice en el grafo
         int indice = 1;
         String[][] etiquetas = new String[r][c];
         for (int i = 0; i < r; i++) {
@@ -46,7 +43,6 @@ public class LaberintoAGrafo {
             }
         }
 
-        // Insertar aristas no dirigidas entre vecinos transitables
         for (int i = 0; i < r; i++) {
             for (int j = 0; j < c; j++) {
                 if (esTransitable(matriz[i][j])) {
@@ -72,7 +68,6 @@ public class LaberintoAGrafo {
             }
         }
 
-        // Buscar etiquetas de 'S' y 'E'
         String inicio = null;
         String fin = null;
         for (int i = 0; i < r; i++) {

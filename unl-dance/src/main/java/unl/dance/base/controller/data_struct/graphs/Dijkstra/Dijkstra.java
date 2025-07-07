@@ -14,7 +14,6 @@ public class Dijkstra {
         boolean[] visitados = new boolean[n];
         String[] predecesores = new String[n];
 
-        // Inicializar etiquetas, distancias y visitados
         for (int i = 0; i < n; i++) {
             etiquetas[i] = grafo.getLabel(i + 1);
             distancias[i] = Float.MAX_VALUE;
@@ -22,16 +21,14 @@ public class Dijkstra {
             predecesores[i] = null;
         }
 
-        // Obtener matriz de adyacencias
         Float[][] matriz = grafo.getMatrix();
 
-        // Buscar índice del nodo de inicio
         int indiceInicio = buscarIndice(etiquetas, inicio);
         distancias[indiceInicio] = 0;
 
         for (int i = 0; i < n; i++) {
             int actual = nodoMinDistancia(distancias, visitados);
-            if (actual == -1) break; // No quedan nodos alcanzables
+            if (actual == -1) break;
             visitados[actual] = true;
 
             for (int j = 0; j < n; j++) {
@@ -81,7 +78,7 @@ public class Dijkstra {
         String actual = fin;
 
         while (actual != null && !actual.equals(inicio)) {
-            camino.add(actual, 0); // Insertar al inicio
+            camino.add(actual, 0);
             int indiceActual = buscarIndice(etiquetas, actual);
             actual = predecesores[indiceActual];
         }

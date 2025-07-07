@@ -7,7 +7,6 @@ public class LaberintoConCamino {
 
     public static void imprimirLaberintoConCamino(char[][] matriz, LinkedList<String> camino) {
 
-        // Marcar el camino en la matriz
         String[] pasos = camino.toArray();
 
         for (String paso : pasos) {
@@ -15,13 +14,11 @@ public class LaberintoConCamino {
             int fila = Integer.parseInt(partes[0]);
             int columna = Integer.parseInt(partes[1]);
 
-            // Evita sobreescribir S o E
             if (matriz[fila][columna] != 'S' && matriz[fila][columna] != 'E') {
                 matriz[fila][columna] = '*';
             }
         }
 
-        // Imprimir matriz
         for (int i = 0; i < matriz.length; i++) {
             for (int j = 0; j < matriz[0].length; j++) {
                 System.out.print(matriz[i][j] + " ");
@@ -32,7 +29,7 @@ public class LaberintoConCamino {
 
     public static void main(String[] args) throws Exception {
         Prim2 generador = new Prim2();
-        String laberintoTexto = generador.generar(25, 25);
+        String laberintoTexto = generador.generar(100, 100);
 
         LaberintoResultado resultado = LaberintoAGrafo.transformar(laberintoTexto);
 
@@ -43,12 +40,10 @@ public class LaberintoConCamino {
         System.out.println("Camino encontrado:");
         System.out.println(camino.print());
 
-        // Reconstruir la matriz
         char[][] matriz = Dijkstra.textoAMatriz(laberintoTexto);
 
         LaberintoConCamino.imprimirLaberintoConCamino(matriz, camino);
         
-        // Mostrar laberinto en ventana gráfica
         InterfazSwing.mostrar(matriz, camino);
 
     }
