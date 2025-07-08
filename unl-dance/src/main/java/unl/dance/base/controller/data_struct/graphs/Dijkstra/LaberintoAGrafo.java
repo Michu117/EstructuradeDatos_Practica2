@@ -3,6 +3,10 @@ package unl.dance.base.controller.data_struct.graphs.Dijkstra;
 import unl.dance.base.controller.data_struct.graphs.UndirectedLabelGraph;
 
 public class LaberintoAGrafo {
+    
+    private static boolean esTransitable(char c) {
+        return c == '1' || c == 'S' || c == 'E';
+    }
 
     public static LaberintoResultado transformar(String laberintoTexto) {
         
@@ -84,8 +88,6 @@ public class LaberintoAGrafo {
         return new LaberintoResultado(grafo, inicio, fin);
     }
 
-    private static boolean esTransitable(char c) {
-        return c == '1' || c == 'S' || c == 'E';
-    }
+
 }
 

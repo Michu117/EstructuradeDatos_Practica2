@@ -10,50 +10,38 @@ public class UndirectedLabelGraph<E> extends DirectLabelGraph<E> {
 		super(size, clazz);
 	}
     
-    
-    // Sobrescribir insert_label para hacer el grafo no dirigido
     @Override
     public void insert_label(E o, E d, Float weight) {
         if (isLabelsGraph()) {
             Integer vertexO = getVertex(o);
             Integer vertexD = getVertex(d);
             
-            // Insertar arista de o hacia d
             insert(vertexO, vertexD, weight);
             
-            // Insertar arista de d hacia o (para hacer no dirigido)
-            if (!vertexO.equals(vertexD)) { // Evitar duplicar bucles
+            if (!vertexO.equals(vertexD)) { 
                 insert(vertexD, vertexO, weight);
             }
         }
     }
 
-    @Override
-    public void insert_label(E o, E d) {
-        insert_label(o, d, Float.NaN);
-    }
-
     public Float[][] getMatrix() {
-        // Initialize the matrix if it's null
         if (this.graph == null) {
             int n = nro_vertex();
             this.graph = new Float[n][n];
             
-            // Initialize all positions with null (no connection)
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
                     this.graph[i][j] = null;
                 }
             }
             
-            // Fill the matrix based on adjacency lists
             for (int i = 1; i <= n; i++) {
                 LinkedList<Adjacency> adjacencies = adjacencies(i);
                 if (!adjacencies.isEmpty()) {
                     Adjacency[] adjArray = adjacencies.toArray();
                     for (Adjacency adj : adjArray) {
-                        int sourceIndex = i - 1; // Convert 1-based to 0-based
-                        int destIndex = adj.getDestiny() - 1; // Convert 1-based to 0-based
+                        int sourceIndex = i - 1; 
+                        int destIndex = adj.getDestiny() - 1; 
                         this.graph[sourceIndex][destIndex] = adj.getWeigth();
                     }
                 }
